@@ -20,8 +20,8 @@
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo-url/subway-surfers-gesture-control.git
-   cd subway-surfers-gesture-control
+   git clone https://github.com/Kaiwhat/BobyGamer.git
+   cd BodyGamer
    ```
 
 2. Install the required dependencies:
@@ -36,16 +36,21 @@
 
 3. Test the environment:
    ```bash
-   python pose_detection_test.py
+   python3 app.py
    ```
    This script will verify the webcam functionality and Mediapipe pose detection.
 
 ## Usage
+1. 允許 http 網站打開攝影機
+2. 打開 google chrome 的實驗性功能，在 chrome 網址打上：
+   ```
+   chrome://flags/#unsafely-treat-insecure-origin-as-secure
+   ```
+3. 在 Insecure origins treated as secure 打上 http://我們的server IP，然後 enable
+4. 最後 Relaunch，左上角會跳出使用攝影機的請求
+
 1. 啟動遊戲，進入遊戲畫面。
 2. 打開主程式
-   ```bash
-   python gesture_control.py
-   ```
 3. 執行以下動作以控制遊戲：
    - **跳躍**: 遊戲中跳躍
    - **蹲下**: 遊戲中蹲下
