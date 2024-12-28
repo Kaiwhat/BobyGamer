@@ -87,6 +87,11 @@ subway-surfers-gesture-control/
 - [OpenCV](https://opencv.org/) for video processing.
 - [PyAutoGUI](https://pyautogui.readthedocs.io/) for keyboard emulation.
 
+## Ref.
+https://youtu.be/Z2EGhplFOHs?feature=shared
+https://github.com/web-tunnel/lite-http-tunnel
+https://blog.csdn.net/qq_43530326/article/details/130974058
+
 ## License
 This project is licensed under the MIT License. See `LICENSE` for details.
 
