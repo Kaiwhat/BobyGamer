@@ -41,12 +41,12 @@
    This script will verify the webcam functionality and Mediapipe pose detection.
 
 ## Usage
-1. Start the Subway Surfers game and navigate to the gameplay screen.
-2. Run the main control script:
+1. 啟動遊戲，進入遊戲畫面。
+2. 打開主程式
    ```bash
    python gesture_control.py
    ```
-3. Perform the following gestures to control the game:
+3. 執行以下手勢以控制遊戲：
    - **舉起雙手或跳躍**: 遊戲中跳躍
    - **蹲下**: 遊戲中蹲下
    - **往左平移**: 遊戲中左閃
