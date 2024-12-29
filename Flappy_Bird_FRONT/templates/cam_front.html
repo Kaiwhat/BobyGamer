@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Game with MediaPipe</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.min.js"></script>
+</head>
+<body>
+    <h1>Flappy Game with MediaPipe</h1>
+    <div style="display: flex;">
+        <!-- Flappy Bird 遊戲 -->
+        <iframe src="https://flappybird.io/" style="width: 50%; height: 700px; border: none;"></iframe>
+
+        <!-- 鏡頭區 -->
+        <div>
+            <h2>Camera Feed with MediaPipe</h2>
+            <video id="video" autoplay playsinline style="display: none;"></video>
+            <canvas id="canvas" style="width: 640px; height: 480px; border: 1px solid black;"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let is_jump=false
+        //import { POSE_CONNECTIONS } from '@mediapipe/pose';//新增
+        // 初始化 Video 和 Canvas 元素
+        const videoElement = document.getElementById('video');
+        const canvasElement = document.getElementById('canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+
+        // 初始化 MediaPipe Pose 模組
+        const pose = new Pose({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+        });
+
+        pose.setOptions({
+            modelComplexity: 1,
+            smoothLandmarks: true,
+            enableSegmentation: false,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        // 监听结果
+        pose.onResults((results) => {
+        // 清空 Canvas
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+        // 水平翻转画布
+        canvasCtx.save();
+        canvasCtx.scale(-1, 1);
+        canvasCtx.translate(-canvasElement.width, 0);
+
+        // 绘制视频帧
+        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+        // 绘制水平线
+        const lineY = 75;
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(0, lineY);
+        canvasCtx.lineTo(canvasElement.width, lineY);
+        canvasCtx.strokeStyle = '#0000FF';
+        canvasCtx.lineWidth = 2;
+        canvasCtx.stroke();
+
+        // 绘制关键点和连线
+        
+        if (results.poseLandmarks) {
+            drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+            color: '#00FF00',
+            lineWidth: 2,
+            });
+            drawLandmarks(canvasCtx, results.poseLandmarks, {
+            color: '#FF0000',
+            lineWidth: 2,
+            radius: 2,
+            });
+
+            // 获取肩膀节点
+            const leftShoulder = results.poseLandmarks[11];
+            const rightShoulder = results.poseLandmarks[12];
+
+            // 将 Y 坐标转换为像素值
+            const leftY = leftShoulder.y * canvasElement.height;
+            const rightY = rightShoulder.y * canvasElement.height;
+            
+
+            // 判断是否超过水平线
+            if (leftY < lineY && rightY < lineY) {
+                if (is_jump==false){
+                    canvasCtx.fillStyle = 'green';
+                    canvasCtx.font = '24px Arial';
+                    canvasCtx.fillText('Jump!', 50, 50);
+                    jump();
+                    is_jump=true;
+                }
+            }
+            else{
+                is_jump=false
+            }
+        }
+
+        canvasCtx.restore();
+        });
+
+        function jump() {
+            // 发送 POST 请求到后端模拟空格键
+            fetch('/jump', {
+                method: 'POST'
+            }).then(response => {
+                console.log('Jump triggered in backend');
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+
+        // 启动摄像头
+        const camera = new Camera(videoElement, {
+        onFrame: async () => {
+            await pose.send({ image: videoElement });
+        },
+        width: 640,
+        height: 480,
+        });
+        camera.start();
+        
+        
+    </script>
+</body>
+</html>
