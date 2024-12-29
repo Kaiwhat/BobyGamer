@@ -40,7 +40,7 @@ def image(sid, img_data):
     result = pose.process(imgRGB)
 
     line_y = 250  # 基準線位置
-
+    cv2.line(img, (0, line_y), (img.shape[1], line_y), (0, 0, 255), 2)
     if result.pose_landmarks:
         # 畫出關鍵點
         mpDraw.draw_landmarks(
@@ -60,7 +60,7 @@ def image(sid, img_data):
 
         # 判斷是否跳躍
         if left_shoulder_y < line_y and right_shoulder_y < line_y:
-            cv2.putText(img,"Jump",(50,50),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),3)
+            cv2.putText(img, "Jump!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
             jumping[sid] = True
         else:
             jumping[sid] = False

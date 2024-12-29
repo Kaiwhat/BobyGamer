@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flappy Bird Game</title>
-    <script src="https://cdn.socket.io/5.12.0/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <style>
         body {
             display: flex;
@@ -75,6 +75,7 @@
         });
     
         // 監聽跳躍事件，模擬空白鍵按下
+        /*
         socket.on('jump', () => {
             const event = new KeyboardEvent('keydown', {
                 key: ' ',
@@ -83,8 +84,8 @@
                 bubbles: true,
             });
             document.dispatchEvent(event);
-        });
+        });*/
+        
     </script>
-    
 </body>
 </html>
