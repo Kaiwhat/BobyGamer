@@ -12,8 +12,24 @@ SUDO_THRESHOLD = 0.2  # SUDO 手勢的距離閾值（食指和中指間距離）
 FIVE_THRESHOLD = 0.05  # 五手手勢的距離閾值
 FIVE_THUMBINDEX = 0.05  # 拇指和食指之間的最大距離閾值
 
+def find_camera():
+    # 嘗試不同的索引（通常從 0 開始）
+    for index in range(10):  # 假設最多有 10 個攝影機
+        cap = cv2.VideoCapture(index)
+        if cap.isOpened():  # 檢查是否成功打開攝影機
+            print(f"Camera found at index {index}")
+            cap.release()
+            return index
+        cap.release()
+    return None  # 如果沒找到攝影機
+
 # 開啟攝影機
-cap = cv2.VideoCapture(0)
+camera_index = find_camera()
+if camera_index is not None:
+    cap = cv2.VideoCapture(camera_index)
+    print(f"攝影機已成功打開，索引為 {camera_index}")
+else:
+    print("未找到可用的攝影機")
 
 def is_ok_gesture(thumb_tip, index_tip, other_fingers):
     thumb_index_distance = math.sqrt((thumb_tip.x - index_tip.x)**2 + (thumb_tip.y - index_tip.y)**2)
