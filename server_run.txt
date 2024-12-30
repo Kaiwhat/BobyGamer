@@ -1,0 +1,20 @@
+讓程式在 server 上一直跑
+- 使用 screen ：sudo apt install screen
+  1. 開新 screen：screen -S new_session
+  2. screen 中 run Python 程式：python3 run.py
+  3. 當程式 run 後，用快捷鍵 Ctrl + A 然後 D 來退出，但程式在後台會繼續 run
+
+  * 如果斷開了或者退出 screen
+  恢復：screen -r new_session
+  
+  * 查看：screen -ls
+  
+  * 刪除
+  會有類似輸出：There are screens on:
+    12345.my_python_session  (Detached)
+  刪除：screen -X -S 12345 quit
+
+
+
+
+
