@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Game with MediaPipe</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.min.js"></script>
+    <link rel="stylesheet" href="flappy.css">
+    <script>var max_score = "{{max_score_back}}"; var is_finish=false; </script>
+    <script src="flappy.js"></script>
+</head>
+<body>
+    <h1>Flappy Game with MediaPipe</h1>
+    <!-- Flappy Bird 遊戲 -->
+    <!-- <link rel="stylesheet" herf="flappy.css"> -->
+    <div style="display: flex;">
+        <section class="flappy_bird">
+            <canvas id="board" ></canvas>
+        </section>
+
+        <!-- 鏡頭區 -->
+        <div>
+            <h2>Camera Feed with MediaPipe</h2>
+            <video id="video" autoplay playsinline style="display: none;"></video>
+            <canvas id="canvas" style="width: 640px; height: 480px; border: 1px solid black;"></canvas>
+        </div>
+        <div>
+            <h2>英雄榜</h2>
+            <div>Max Score: <span id="maxScore">{{max_score_back}}</span> <a href="/show_table"><button>顯示/更新榜單</button></a></div>
+            
+            <script>
+                //定時從後端抓取資料
+                function updateMaxScore() {
+                    fetch('/get_max_score')
+                        .then(response => response.json()) // 将响应解析为 JSON
+                        .then(data => {
+                            // 更新前端的 Max Score
+                            document.getElementById('maxScore').textContent = data.max_score;
+                        })
+                        .catch(error => console.error('Error fetching max score:', error));
+                }
+            
+                //刷新分數
+                setInterval(updateMaxScore, 100);//原為5000
+            
+                // 页面加载完成后立即刷新一次分数
+                //window.onload = updateMaxScore;
+            </script>
+
+            <form method="POST" action="/insert_table">
+                (當分數超過最大分數才可以新增自己的名字)
+                <h3>輸入名字：<input type="text" value="guest" name="player_name" id="player_name" onkeydown="if(event.keyCode==13){return false;}"></h3>
+                <input type="submit" value="更新榜單" style="display: none;" id="max_score_input_button">
+            </form>
+
+            <table>
+                <tr>
+                    <th>玩家名稱</th>
+                    <th>分數</th>
+                </tr>
+                {% for i in table %}
+                <tr>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.score }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        let is_jump=false
+        //import { POSE_CONNECTIONS } from '@mediapipe/pose';//新增
+        //初始化 Video 和 Canvas 元素
+        const videoElement = document.getElementById('video');
+        const canvasElement = document.getElementById('canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+
+        //初始化MediaPipe 模組
+        const pose = new Pose({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+        });
+
+        pose.setOptions({
+            modelComplexity: 1,
+            smoothLandmarks: true,
+            enableSegmentation: false,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        //監聽結果
+        pose.onResults((results) => {
+        //清空Canvas
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+        //鏡像
+        canvasCtx.save();
+        canvasCtx.scale(-1, 1);
+        canvasCtx.translate(-canvasElement.width, 0);
+
+        //畫在圖片上
+        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+        //畫出跳躍基準線
+        const lineY = 75;
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(0, lineY);
+        canvasCtx.lineTo(canvasElement.width, lineY);
+        canvasCtx.strokeStyle = '#0000FF';
+        canvasCtx.lineWidth = 2;
+        canvasCtx.stroke();
+
+        //畫出點跟線
+        if (results.poseLandmarks) {
+            drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+            color: '#00FF00',
+            lineWidth: 2,
+            });
+            drawLandmarks(canvasCtx, results.poseLandmarks, {
+            color: '#FF0000',
+            lineWidth: 2,
+            radius: 2,
+            });
+
+            //左右肩膀的節點
+            const leftShoulder = results.poseLandmarks[11];
+            const rightShoulder = results.poseLandmarks[12];
+
+            //將y座標轉為向素
+            const leftY = leftShoulder.y * canvasElement.height;
+            const rightY = rightShoulder.y * canvasElement.height;
+            
+
+            //判斷是否起跳
+            if (leftY < lineY && rightY < lineY) {
+                if (is_jump==false){
+                    canvasCtx.fillStyle = 'green';
+                    canvasCtx.font = '24px Arial';
+                    canvasCtx.fillText('Jump!', 50, 50);
+                    jump();
+                    is_jump=true;
+                }
+            }
+            else{
+                is_jump=false
+            }
+        }
+
+        canvasCtx.restore();
+        });
+
+        function jump() {
+            const event = new KeyboardEvent('keydown', {
+                key: ' ',
+                keyCode: 32,  // 空白鍵的鍵值
+                code: 'Space',
+                bubbles: true,
+            });
+            document.dispatchEvent(event);
+        }
+
+
+        // 啟動攝影機
+        const camera = new Camera(videoElement, {
+        onFrame: async () => {
+            await pose.send({ image: videoElement });
+        },
+        width: 640,
+        height: 480,
+        });
+        camera.start();
+        
+        
+    </script>
+</body>
+</html>
