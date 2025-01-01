@@ -95,6 +95,10 @@ Enjoy playing Subway Surfers with your body movements! 🚀
 
 ## 遇到問題
 
+- 用http無法開啟鏡頭
+  解決方法：https://blog.csdn.net/qq_43530326/article/details/130974058
+- flappy bird 與subway 遊戲 如果架server上
+
 ## 分工表
 | 組員 | 工作內容 | 
 | :---: | :---: | 
