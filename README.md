@@ -74,7 +74,7 @@
    ```
 4. 在 Insecure origins treated as secure 打上 http://我們的server IP，然後 enable
 5. 最後 Relaunch，左上角會跳出使用攝影機的請求
-
+![image](https://github.com/user-attachments/assets/c73462e6-a4f0-433d-90bf-47b3e83607d0)
 6. 啟動遊戲，進入遊戲畫面。
 7. 執行以下動作以控制遊戲：
 - **水管鳥**:
