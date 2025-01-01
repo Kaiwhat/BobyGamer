@@ -10,11 +10,11 @@
 ## Existing Library/Software
 - **Python**: 3.7 或更高版本
 - **Mediapipe**: 用於肢體辨識模型來即時偵測與追蹤玩家動作。
-  Git: [Mediapipe](https://google.github.io/mediapipe/)
+  Git: [Mediapipe](https://github.com/google-ai-edge/mediapipe)
 - **Open-CV** : 用於影像處理
-  Git: [OpenCV](https://opencv.org/)
+  Git: [OpenCV](https://github.com/opencv/opencv)
 - **PyAutoGUI** : 用指令操作鍵盤
-  Git: [PyAutoGUI](https://pyautogui.readthedocs.io/)
+  Git: [PyAutoGUI](https://github.com/asweigart/pyautogui)
 - **Gesture Mapping**: 將特定手勢（如舉手、下蹲）映射到遊戲內的動作。
 - **Seamless Integration**: 可與正在運行的遊戲配合，檢測姿勢模擬鍵盤輸入。
 
