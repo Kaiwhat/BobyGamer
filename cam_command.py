@@ -8,22 +8,16 @@ import time
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
+# 門檻值
 OK_THRESHOLD = 0.05  # OK 手勢的距離閾值
-SUDO_THRESHOLD = 0.2  # SUDO 手勢的距離閾值（食指和中指間距離）
-FIVE_THRESHOLD = 0.05  # 5 手勢的間距閾值
 FIVE_THUMBINDEX = 0.15  # 食指和拇指間距的閾值
-
-# 拇指與四指垂直的閾值
-PERPENDICULAR_THRESHOLD = 0.1  # 假設角度接近90度的閾值
+FIST_THRESHOLD = 0.07  # 握拳手勢的距離閾值
 
 # 開啟攝影機
 cap = cv2.VideoCapture(0)
 
-def is_both_hands(hand_landmarks_list):
-    if len(hand_landmarks_list) < 2:
-        return True
-    
-    return False
+def is_not_both_hands(hand_landmarks_list):
+    return len(hand_landmarks_list) < 2
 
 # 判斷 OK 手勢
 def is_ok_gesture(thumb_tip, index_tip, other_fingers):
@@ -33,23 +27,38 @@ def is_ok_gesture(thumb_tip, index_tip, other_fingers):
         for finger in other_fingers
     ]
     return thumb_index_distance < OK_THRESHOLD and all(dist > 0.1 for dist in other_finger_distances)
+    
 
-# 判斷 SUDO 手勢
-def is_sudo_gesture(thumb_tip, index_tip, middle_tip, ring_tip, pinky_tip):
-    thumb_pinky_distance = math.sqrt((thumb_tip.x - pinky_tip.x)**2 + (thumb_tip.y - pinky_tip.y)**2)
-    index_middle_distance = math.sqrt((index_tip.x - middle_tip.x)**2 + (index_tip.y - middle_tip.y)**2)
-    middle_ring_distance = math.sqrt((middle_tip.x - ring_tip.x)**2 + (middle_tip.y - ring_tip.y)**2)
-    return thumb_pinky_distance > SUDO_THRESHOLD and index_middle_distance < 0.05 and middle_ring_distance < 0.05
+# 判斷 握拳 手勢
+def is_fist_gesture(hand_landmarks):
+    wrist = hand_landmarks.landmark[mp_hands.HandLandmark.WRIST]
+    thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
+    index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
+    middle_tip = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP]
+    ring_tip = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP]
+    pinky_tip = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP]
+    
+    palm_center_x = (wrist.x + hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].x) / 2
+    palm_center_y = (wrist.y + hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].y) / 2
+    palm_center = type('Point', (object,), {'x': palm_center_x, 'y': palm_center_y})
 
-# 判斷 5 手勢
-def is_five_gesture(thumb_tip, index_tip, middle_tip, ring_tip, pinky_tip):
-    distances = [
-        math.sqrt((index_tip.x - middle_tip.x)**2 + (index_tip.y - middle_tip.y)**2),
-        math.sqrt((middle_tip.x - ring_tip.x)**2 + (middle_tip.y - ring_tip.y)**2),
-        math.sqrt((ring_tip.x - pinky_tip.x)**2 + (ring_tip.y - pinky_tip.y)**2)
+    # 判斷所有手指尖端是否靠近手掌中心
+    finger_distances = [
+        math.sqrt((thumb_tip.x - palm_center.x)**2 + (thumb_tip.y - palm_center.y)**2),
+        math.sqrt((index_tip.x - palm_center.x)**2 + (index_tip.y - palm_center.y)**2),
+        math.sqrt((middle_tip.x - palm_center.x)**2 + (middle_tip.y - palm_center.y)**2),
+        math.sqrt((ring_tip.x - palm_center.x)**2 + (ring_tip.y - palm_center.y)**2),
+        math.sqrt((pinky_tip.x - palm_center.x)**2 + (pinky_tip.y - palm_center.y)**2),
     ]
-    THUM_DIST = math.sqrt((thumb_tip.x - index_tip.x)**2 + (thumb_tip.y - index_tip.y)**2)
-    return all(dist > FIVE_THRESHOLD for dist in distances) and THUM_DIST < FIVE_THUMBINDEX
+
+    # 判斷手指是否彎曲（全部指尖接近手掌中心）
+    is_fist = all(distance < FIST_THRESHOLD for distance in finger_distances)
+
+    # 檢測手背朝向攝像頭
+    middle_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP]
+    hand_direction = middle_mcp.y < wrist.y  # MCP 在手腕上方表示手背向上
+
+    return is_fist and hand_direction
 
 # 計算兩個向量的內積
 def dot_product(v1, v2):
@@ -127,49 +136,40 @@ with mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.5) a
                 # 畫出手部關節點和連線
                 mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
-                #手部節點
-                thumb_ip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_IP]  # 拇指指根
-                thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP] # 拇指尖端
-                index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP] # 食指尖端
-                middle_tip = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP] # 中指尖端
-                ring_tip = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP] # 無名指尖端
-                pinky_tip = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP] # 小指尖端
-                
-                # 比OK觸發
-                if is_both_hands(results.multi_hand_landmarks):
-                    if is_ok_gesture(thumb_tip, index_tip, [middle_tip, ring_tip, pinky_tip]) and trigger_time < 1:
-                        cv2.putText(frame, "send command!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                        trigger_time += 1
-                        pyautogui.press("enter")  # 模擬按下 Enter 鍵
-                        print("OK 手勢觸發：Enter")
-                        continue
-                    
-                    # 比SUDO觸發
-                    if is_sudo_gesture(thumb_tip, index_tip, middle_tip, ring_tip, pinky_tip) and trigger_time < 1:
-                        cv2.putText(frame, "SUDO！！！", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                        trigger_time += 1
-                        pyautogui.write("sudo ")  # 模擬輸入 "sudo"
-                        print("SUDO 手勢觸發：sudo ")
-                        continue
+                # 手部節點
+                thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]  # 拇指尖端
+                index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]  # 食指尖端
+                middle_tip = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP]  # 中指尖端
+                ring_tip = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP]  # 無名指尖端
+                pinky_tip = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP]  # 小指尖端
 
-                    # 比5手勢觸發
-                    if is_five_gesture(thumb_tip, index_tip, middle_tip, ring_tip, pinky_tip) and trigger_time < 1:
-                        cv2.putText(frame, "List items!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                        trigger_time += 1
-                        pyautogui.write("ls ")  # 模擬輸入 "ls"
-                        print("ls typed")
-                        continue
+            if is_not_both_hands(results.multi_hand_landmarks):
+                # 比 OK 觸發
+                if is_ok_gesture(thumb_tip, index_tip, [middle_tip, ring_tip, pinky_tip]) and trigger_time < 1:
+                    cv2.putText(frame, "send command!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    trigger_time += 1
+                    pyautogui.press("enter")  # 模擬按下 Enter 鍵
+                    print("OK 手勢觸發：Enter")
+                    continue
 
-                else:
-                    # 檢查是否符合雙手 "鳥" 手勢條件
-                    if is_bird_gesture(results.multi_hand_landmarks) and trigger_time < 1:
-                        cv2.putText(frame, "Bird!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                        trigger_time += 1
-                        pyautogui.write("flappy bird")  # 模擬輸入啟動指令
-                        pyautogui.press("enter")
-                        print("Flappy Bird started!")
-                        continue
-                
+                # 比握拳觸發
+                if is_fist_gesture(hand_landmarks) and trigger_time < 1:
+                    cv2.putText(frame, "Ping pong!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    trigger_time += 1
+                    pyautogui.write("xdg-open https://www.pingpong.leafish.xyz/")  # 模擬輸入 "sudo"
+                    pyautogui.press("enter")
+                    print("Ping pong started!")
+                    continue
+
+            else:
+                # 檢查是否符合雙手 "鳥" 手勢條件
+                if is_bird_gesture(results.multi_hand_landmarks) and trigger_time < 1:
+                    cv2.putText(frame, "Bird!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    trigger_time += 1
+                    pyautogui.write("xdg-open https://www.flappybird.leafish.xyz")  # 模擬輸入啟動指令
+                    pyautogui.press("enter")
+                    print("Flappy Bird started!")
+                    continue
 
         else:
             trigger_time = 0  # 若未偵測到手部，重置觸發時間
