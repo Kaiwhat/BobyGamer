@@ -145,19 +145,19 @@ function startGame(room) {
 
         // up and down walls
         if (room.ball.y < 5) {
-            room.players[1].score += 1;
-            room.ball.y = 300;
-            room.ball.x = 210;
-            room.ball.dx *= 1;
-            room.ball.dy *= -1;
-        }
-
-        if (room.ball.y > 595) {
             room.players[0].score += 1;
             room.ball.y = 300;
             room.ball.x = 210;
             room.ball.dx *= 1;
-            room.ball.dy *= -1;
+            room.ball.dy *= 1;
+        }
+
+        if (room.ball.y > 595) {
+            room.players[1].score += 1;
+            room.ball.y = 300;
+            room.ball.x = 210;
+            room.ball.dx *= 1;
+            room.ball.dy *= 1;
         }
 
 
