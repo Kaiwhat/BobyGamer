@@ -90,6 +90,9 @@
    - **OK手勢**：執行ENTER動作
    - **鳥手勢**：開啟 _Flappy Bird_ 網頁遊戲
    - **握球拍手勢**：開啟 _Ping Pong_ 網頁遊戲
+     
+     ![image](https://github.com/user-attachments/assets/41076220-01dc-49fe-9ba1-3da28f39f4de)
+
 
 ---
 
