@@ -16,17 +16,23 @@
 - **[Seamless Integration]**: 可與正在運行的遊戲配合，檢測姿勢模擬鍵盤輸入。
 
 ## Architecture
+![image](https://github.com/user-attachments/assets/0e320176-1129-4dd9-812f-f1a853d5c44a)
+
+
 
 ## Implementation Process
-1. **姿勢檢測**：
-   - Mediapipe 識別身體關鍵點（肩膀、嘴巴）。
-   - 處理檢測到的關鍵點以判斷手勢。
-
-2. **手勢映射**：
-   - 使用 `gesture_mapping.py` 中的自定義邏輯將特定手勢映射到遊戲操作。
-
-3. **鍵盤模擬**：
-   - 檢測到的手勢通過 `pyautogui` libary 觸發對應的鍵盤輸入。
+### 遊戲:
+   1. **姿勢檢測**：
+      - Mediapipe 識別身體關鍵點（肩膀、嘴巴）。
+      - 處理檢測到的關鍵點以判斷手勢。
+   
+   2. **手勢映射**：
+      - 使用 `gesture_mapping.py` 中的自定義邏輯將特定手勢映射到遊戲操作。
+   
+   3. **鍵盤模擬**：
+      - 檢測到的手勢通過 `pyautogui` libary 觸發對應的鍵盤輸入。
+### 伺服器:
+  
 
 
 
