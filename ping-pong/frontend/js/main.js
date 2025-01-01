@@ -174,12 +174,26 @@ canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.heig
 
 //畫出跳躍基準線
 const lineY = 75;
+const lineX = 50;
+const lineX2 = 250;//300
 canvasCtx.beginPath();
-canvasCtx.moveTo(0, lineY);
-canvasCtx.lineTo(canvasElement.width, lineY);
+canvasCtx.moveTo(lineX, 0);
+canvasCtx.lineTo(lineX, canvasElement.height);
+canvasCtx.moveTo(lineX2, 0);
+canvasCtx.lineTo(lineX2, canvasElement.height);
+//canvasCtx.moveTo(0, lineY);
+//canvasCtx.lineTo(canvasElement.width, lineY);
 canvasCtx.strokeStyle = '#0000FF';
 canvasCtx.lineWidth = 2;
 canvasCtx.stroke();
+/*
+canvasCtx.beginPath();
+canvasCtx.moveTo(lineX2, 0);
+canvasCtx.lineTo(lineX2, canvasElement.height);
+canvasCtx.strokeStyle = '#0000FF';
+canvasCtx.lineWidth = 2;
+canvasCtx.stroke();
+*/
 
 //畫出點跟線
 if (results.poseLandmarks) {
@@ -194,15 +208,16 @@ if (results.poseLandmarks) {
     });
 
     //左右肩膀的節點
-    const leftShoulder = results.poseLandmarks[11];
-    const rightShoulder = results.poseLandmarks[12];
+    const leftHand = results.poseLandmarks[19];
+    const rightHand = results.poseLandmarks[20];
 
     //將y座標轉為向素
-    const leftY = leftShoulder.y * canvasElement.height;
-    const rightY = rightShoulder.y * canvasElement.height;
+    const leftX = leftHand.x * canvasElement.width;
+    const rightX = rightHand.x * canvasElement.width;
     
 
     //判斷是否起跳
+    /*
     if (leftY < lineY && rightY < lineY) {
         if (is_jump==false){
             canvasCtx.fillStyle = 'green';
@@ -214,6 +229,19 @@ if (results.poseLandmarks) {
     }
     else{
         is_jump=false
+    }
+    */
+    if (leftX>lineX2 || rightX>lineX2){
+        canvasCtx.fillStyle = 'green';
+        canvasCtx.font = '24px Arial';
+        canvasCtx.fillText('LEFT!', 250, 50);
+        press_left();
+    }
+    if (rightX<lineX || leftX<lineX){
+        canvasCtx.fillStyle = 'green';
+        canvasCtx.font = '24px Arial';
+        canvasCtx.fillText('RIGHT!', 50, 50);
+        press_right();
     }
 }
 
@@ -230,6 +258,27 @@ function jump() {
     document.dispatchEvent(event);
 }
 
+//left key
+function press_left() {
+    const event = new KeyboardEvent('keydown', {
+        key: 'ArrowLeft',
+        keyCode: 37,  // 空白鍵的鍵值
+        code: 'ArrowLeft',
+        bubbles: true,
+    });
+    document.dispatchEvent(event);
+}
+
+//right key
+function press_right() {
+    const event = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        keyCode: 39,  // 空白鍵的鍵值
+        code: 'ArrowRight',
+        bubbles: true,
+    });
+    document.dispatchEvent(event);
+}
 
 // 啟動攝影機
 const camera = new Camera(videoElement, {
