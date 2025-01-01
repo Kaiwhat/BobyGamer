@@ -8,28 +8,15 @@
 - CPU運算能力: i5 4210u UP
 
 ## Existing Library/Software
-- **Python**: 3.7 或更高版本
-- **Mediapipe**: 用於肢體辨識模型來即時偵測與追蹤玩家動作。
-  Git: [Mediapipe](https://github.com/google-ai-edge/mediapipe)
-- **Open-CV** : 用於影像處理
-  Git: [OpenCV](https://github.com/opencv/opencv)
-- **PyAutoGUI** : 用指令操作鍵盤
-  Git: [PyAutoGUI](https://github.com/asweigart/pyautogui)
-- **Gesture Mapping**: 將特定手勢（如舉手、下蹲）映射到遊戲內的動作。
-- **Seamless Integration**: 可與正在運行的遊戲配合，檢測姿勢模擬鍵盤輸入。
+- **Python**: 3.7 UP
+- **[Mediapipe](https://github.com/google-ai-edge/mediapipe)**: 用於肢體辨識模型來即時偵測與追蹤玩家動作。
+- **[Open-CV](https://github.com/opencv/opencv)** : 用於影像處理
+- **[PyAutoGUI](https://github.com/asweigart/pyautogui)** : 用指令操作鍵盤
+- **[Gesture Mapping](https://github.com/dang-hai/GestureMap)**: 將特定手勢（如舉手、下蹲）映射到遊戲內的動作。
+- **[Seamless Integration]**: 可與正在運行的遊戲配合，檢測姿勢模擬鍵盤輸入。
 
 ## Architecture
 
-```
-subway-surfers-gesture-control/
-├── README.md            # Project documentation
-├── requirements.txt     # List of dependencies
-├── pose_detection_test.py # Script to test pose detection
-├── gesture_control.py   # Main script for gesture-based game control
-├── utils/               # Utility scripts for gesture mapping and debugging
-│   ├── gesture_mapping.py
-│   ├── video_utils.py
-```
 ## Implementation Process
 1. **姿勢檢測**：
    - Mediapipe 識別身體關鍵點（肩膀、嘴巴）。
@@ -41,19 +28,7 @@ subway-surfers-gesture-control/
 3. **鍵盤模擬**：
    - 檢測到的手勢通過 `pyautogui` libary 觸發對應的鍵盤輸入。
 
--  for keyboard emulation.
 
-## Ref.
-https://youtu.be/Z2EGhplFOHs?feature=shared
-https://github.com/web-tunnel/lite-http-tunnel
-https://blog.csdn.net/qq_43530326/article/details/130974058
-
-## License
-This project is licensed under the MIT License. See `LICENSE` for details.
-
----
-
-Enjoy playing Subway Surfers with your body movements! 🚀
 
 ## Installation
 1. Clone the repository:
@@ -80,29 +55,60 @@ Enjoy playing Subway Surfers with your body movements! 🚀
    
 ## Usage
 1. 允許 http 網站打開攝影機
-2. 打開 google chrome 的實驗性功能，在 chrome 網址打上：
+  - step 1.
+    ![image](https://github.com/user-attachments/assets/60db5236-a05f-4a8f-914d-273a53745faf)
+  - step 2.
+    ![image](https://github.com/user-attachments/assets/3c647c32-7640-4483-a192-11c22765102d)
+
+3. 打開 google chrome 的實驗性功能，在 chrome 網址打上：
    ```
    chrome://flags/#unsafely-treat-insecure-origin-as-secure
    ```
-3. 在 Insecure origins treated as secure 打上 http://我們的server IP，然後 enable
-4. 最後 Relaunch，左上角會跳出使用攝影機的請求
+4. 在 Insecure origins treated as secure 打上 http://我們的server IP，然後 enable
+5. 最後 Relaunch，左上角會跳出使用攝影機的請求
 
-1. 啟動遊戲，進入遊戲畫面。
-2. 打開主程式
-3. 執行以下動作以控制遊戲：
-   - **跳躍**: 遊戲中跳躍
-   - **蹲下**: 遊戲中蹲下
-   - **往左平移**: 遊戲中左閃
-   - **往右平移**: 遊戲中右閃
+6. 啟動遊戲，進入遊戲畫面。
+7. 執行以下動作以控制遊戲：
+   - **水管鳥**:
+      - **跳躍**: 遊戲中跳躍
+   - **地鐵跑酷**:
+      - **跳躍**: 遊戲中跳躍
+      - **蹲下**: 遊戲中蹲下
+      - **往左平移**: 遊戲中左閃
+      - **往右平移**: 遊戲中右閃
+   - **乒乓球**:
+      - **左/右手觸碰鏡頭畫面邊框**: 球拍左/右移動
+   - **身體指令**:
 
-4. 使用肢體手勢享受新的遊戲體驗！
 
+---
+
+Enjoy playing Subway Surfers with your body movements! 🚀
 
 ## 遇到問題
 
 ## 分工表
+| 組員 | 工作內容 | 
+| :---: | :---: | 
+| 吳楷賀 | 乒乓球、球拍? | 
+| 陳子晴 | 水管鳥、攝影師? | 
+| 廖志賢 | 地鐵跑酷、鬆餅！！！！！ | 
+| 楊立楚 | 用身體打指令、貢獻身體| 
+| 葉芷妤 | 伺服器設定、舞龍舞獅、報告 |  
 
 ## 感謝名單
-
+- 柏偉學長
+- Josh學長
+- BlueT
+- Reg 學長
+- Chat GPT :D
 ## Reference
+https://youtu.be/Z2EGhplFOHs?feature=shared
+
+https://github.com/web-tunnel/lite-http-tunnel
+
+https://blog.csdn.net/qq_43530326/article/details/130974058
+
+## License
+This project is licensed under the MIT License. See `LICENSE` for details.
 
