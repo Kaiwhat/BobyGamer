@@ -73,8 +73,8 @@
    chrome://flags/#unsafely-treat-insecure-origin-as-secure
    ```
 4. 在 Insecure origins treated as secure 打上 http://我們的server IP，然後 enable
-5. 最後 Relaunch，左上角會跳出使用攝影機的請求
 ![image](https://github.com/user-attachments/assets/c73462e6-a4f0-433d-90bf-47b3e83607d0)
+5. 最後 Relaunch，左上角會跳出使用攝影機的請求
 6. 啟動遊戲，進入遊戲畫面。
 7. 執行以下動作以控制遊戲：
 - **水管鳥**:
@@ -98,8 +98,15 @@ Enjoy playing Subway Surfers with your body movements! 🚀
 ## 遇到問題
 
 - 用http無法開啟鏡頭
-  解決方法：https://blog.csdn.net/qq_43530326/article/details/130974058
-- flappy bird 與subway 遊戲 如果架server上
+  解決方法：https://blog.csdn.net/qq_43530326/article/details/130974058 (也可查看## Usage)
+- flappy bird 與subway 遊戲，如果架到server上，server無法控制我們自己的的鍵盤
+  解決方法：自己寫一個flappy bird遊戲，
+- 後端運算後再傳到前端會延遲
+  解決方法：改在前端做運算
+
+## 未來展望
+- 我們的 flappy bird 運行速度會取決於CPU的效能，希望能改善
+- 
 
 ## 分工表
 | 組員 | 工作內容 | 
@@ -116,6 +123,7 @@ Enjoy playing Subway Surfers with your body movements! 🚀
 - Josh學長
 - Reg 學長
 - Chat GPT :D))
+
 ## Reference
 https://youtu.be/Z2EGhplFOHs?feature=shared
 
