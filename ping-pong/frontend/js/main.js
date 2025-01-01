@@ -136,3 +136,108 @@ function draw() {
     ctx_r.lineTo(450, 300);
     ctx_r.stroke();
 }
+
+
+
+let is_jump=false
+//import { POSE_CONNECTIONS } from '@mediapipe/pose';//新增
+//初始化 Video 和 Canvas 元素
+const videoElement = document.getElementById('video');
+const canvasElement = document.getElementById('canvas_v');
+const canvasCtx = canvasElement.getContext('2d');
+
+//初始化MediaPipe 模組
+const pose = new Pose({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+});
+
+pose.setOptions({
+    modelComplexity: 1,
+    smoothLandmarks: true,
+    enableSegmentation: false,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+});
+
+//監聽結果
+pose.onResults((results) => {
+//清空Canvas
+canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+//鏡像
+canvasCtx.save();
+canvasCtx.scale(-1, 1);
+canvasCtx.translate(-canvasElement.width, 0);
+
+//畫在圖片上
+canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+//畫出跳躍基準線
+const lineY = 75;
+canvasCtx.beginPath();
+canvasCtx.moveTo(0, lineY);
+canvasCtx.lineTo(canvasElement.width, lineY);
+canvasCtx.strokeStyle = '#0000FF';
+canvasCtx.lineWidth = 2;
+canvasCtx.stroke();
+
+//畫出點跟線
+if (results.poseLandmarks) {
+    drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+    color: '#00FF00',
+    lineWidth: 2,
+    });
+    drawLandmarks(canvasCtx, results.poseLandmarks, {
+    color: '#FF0000',
+    lineWidth: 2,
+    radius: 2,
+    });
+
+    //左右肩膀的節點
+    const leftShoulder = results.poseLandmarks[11];
+    const rightShoulder = results.poseLandmarks[12];
+
+    //將y座標轉為向素
+    const leftY = leftShoulder.y * canvasElement.height;
+    const rightY = rightShoulder.y * canvasElement.height;
+    
+
+    //判斷是否起跳
+    if (leftY < lineY && rightY < lineY) {
+        if (is_jump==false){
+            canvasCtx.fillStyle = 'green';
+            canvasCtx.font = '24px Arial';
+            canvasCtx.fillText('Jump!', 50, 50);
+            jump();
+            is_jump=true;
+        }
+    }
+    else{
+        is_jump=false
+    }
+}
+
+canvasCtx.restore();
+});
+
+function jump() {
+    const event = new KeyboardEvent('keydown', {
+        key: ' ',
+        keyCode: 32,  // 空白鍵的鍵值
+        code: 'Space',
+        bubbles: true,
+    });
+    document.dispatchEvent(event);
+}
+
+
+// 啟動攝影機
+const camera = new Camera(videoElement, {
+onFrame: async () => {
+    await pose.send({ image: videoElement });
+},
+width: 640,
+height: 480,
+});
+camera.start();
+
