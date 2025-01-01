@@ -95,7 +95,17 @@ socket.on("updateGame", (room) => {
     ball.x = room.ball.x;
     ball.y = room.ball.y;
 
-    draw();
+    if (playerNo==1){
+        draw_l();
+        canvas_r.style.display="none";
+        document.getElementsByClassName("container")[0].style.flexDirection = "row";
+    }
+    if (playerNo==2){
+        draw_r();
+        canvas_l.style.display="none";
+        document.getElementsByClassName("container")[0].style.flexDirection = "row";
+
+    }
 });
 
 socket.on("endGame", (room) => {
@@ -105,7 +115,7 @@ socket.on("endGame", (room) => {
 
 
 
-function draw() {
+function draw_l() {
     // player 1 view
     ctx_l.clearRect(0, 0, 450, 600);
 
@@ -120,7 +130,9 @@ function draw() {
     ctx_l.moveTo(5, 300);
     ctx_l.lineTo(450, 300);
     ctx_l.stroke();
+}
 
+function draw_r(){
     // player 2 view
     ctx_r.clearRect(0, 0, 450, 600);
 
@@ -247,16 +259,6 @@ if (results.poseLandmarks) {
 
 canvasCtx.restore();
 });
-
-function jump() {
-    const event = new KeyboardEvent('keydown', {
-        key: ' ',
-        keyCode: 32,  // 空白鍵的鍵值
-        code: 'Space',
-        bubbles: true,
-    });
-    document.dispatchEvent(event);
-}
 
 //left key
 function press_left() {
