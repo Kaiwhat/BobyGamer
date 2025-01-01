@@ -14,6 +14,8 @@
 - **[PyAutoGUI](https://github.com/asweigart/pyautogui)** : 用指令操作鍵盤
 - **[Gesture Mapping](https://github.com/dang-hai/GestureMap)**: 將特定手勢（如舉手、下蹲）映射到遊戲內的動作。
 - **[Seamless Integration]**: 可與正在運行的遊戲配合，檢測姿勢模擬鍵盤輸入。
+- **[mySQL]**: 紀錄遊戲的英雄榜。
+- **[Flask]**: 用於架設網站。
 
 ## Architecture
 ![image](https://github.com/user-attachments/assets/0e320176-1129-4dd9-812f-f1a853d5c44a)
@@ -103,11 +105,11 @@ Enjoy playing Subway Surfers with your body movements! 🚀
 | 葉芷妤 | 伺服器設定、舞龍舞獅、報告 |  
 
 ## 感謝名單
+- BlueT
 - 柏偉學長
 - Josh學長
-- BlueT
 - Reg 學長
-- Chat GPT :D
+- Chat GPT :D))
 ## Reference
 https://youtu.be/Z2EGhplFOHs?feature=shared
 
