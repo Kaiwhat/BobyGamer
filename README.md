@@ -54,6 +54,7 @@
    - mediapipe
    - opencv-python
    - pyautogui
+   - flask
 
 3. Test the environment:
    ```bash
