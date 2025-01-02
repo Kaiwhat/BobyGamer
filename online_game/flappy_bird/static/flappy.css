@@ -1,0 +1,9 @@
+.flappy_bird {
+    font-family:'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+#board {
+    /*background-color: aliceblue;*/
+    background-image: url("img/flappybirdbg.png");
+}
