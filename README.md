@@ -16,6 +16,9 @@
 - **[Seamless Integration]**: 可與正在運行的遊戲配合，檢測姿勢模擬鍵盤輸入。
 - **[mySQL]**: 紀錄 flappy bird 的英雄榜。
 - **[Flask]**: 用於架設網站。
+- **[Socket]**
+- **[Express]**
+- **[cors]**
 
 ## Architecture
 ![image](https://github.com/user-attachments/assets/0e320176-1129-4dd9-812f-f1a853d5c44a)
