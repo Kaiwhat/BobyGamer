@@ -148,8 +148,9 @@ with mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.5) a
                 if is_ok_gesture(thumb_tip, index_tip, [middle_tip, ring_tip, pinky_tip]) and trigger_time < 1:
                     cv2.putText(frame, "Enter!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                     trigger_time += 1
+                    pyautogui.write("sl ")
                     pyautogui.press("enter")  # 模擬按下 Enter 鍵
-                    print("OK 手勢觸發：Enter")
+                    print("OK 手勢觸發：嘟嘟小火車")
                     continue
 
                 # 比握拳觸發
