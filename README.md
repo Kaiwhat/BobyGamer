@@ -14,7 +14,7 @@
 - **[PyAutoGUI](https://github.com/asweigart/pyautogui)** : 用指令操作鍵盤
 - **[Gesture Mapping](https://github.com/dang-hai/GestureMap)**: 將特定手勢（如舉手、下蹲）映射到遊戲內的動作。
 - **[Seamless Integration]**: 可與正在運行的遊戲配合，檢測姿勢模擬鍵盤輸入。
-- **[mySQL]**: 紀錄遊戲的英雄榜。
+- **[mySQL]**: 紀錄 flappy bird 的英雄榜。
 - **[Flask]**: 用於架設網站。
 
 ## Architecture
