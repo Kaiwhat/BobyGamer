@@ -2,16 +2,15 @@ import cv2
 import mediapipe as mp
 import math
 import pyautogui
-import webbrowser
 
 # 初始化 MediaPipe 手部追蹤器
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
 # 門檻值
-OK_THRESHOLD = 0.05  # OK 手勢的距離閾值
+OK_THRESHOLD = 0.03  # OK 手勢的距離閾值
 FIVE_THUMBINDEX = 0.15  # 食指和拇指間距的閾值
-FIST_THRESHOLD = 0.07  # 握拳手勢的距離閾值
+FIST_THRESHOLD = 0.085 # 握拳手勢的距離閾值
 
 # 開啟攝影機
 cap = cv2.VideoCapture(0)
@@ -26,7 +25,7 @@ def is_ok_gesture(thumb_tip, index_tip, other_fingers):
         math.sqrt((finger.x - thumb_tip.x)**2 + (finger.y - thumb_tip.y)**2)
         for finger in other_fingers
     ]
-    return thumb_index_distance < OK_THRESHOLD and all(dist > 0.1 for dist in other_finger_distances)
+    return thumb_index_distance < OK_THRESHOLD and all(dist > 0.2 for dist in other_finger_distances)
     
 
 # 判斷 握拳 手勢
@@ -157,8 +156,8 @@ with mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.5) a
                 if is_fist_gesture(hand_landmarks) and trigger_time < 1:
                     cv2.putText(frame, "Ping pong!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                     trigger_time += 1
-                    url = "www.pingpong.leafish.xyz"  # 模擬輸入啟動指令
-                    webbrowser.open(url)
+                    pyautogui.write("xdg-open www.pingpong.leafish.xyz")  # 模擬輸入啟動指令
+                    pyautogui.press("enter")
                     print("Ping pong started!")
                     continue
 
@@ -167,8 +166,8 @@ with mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.5) a
                 if is_bird_gesture(results.multi_hand_landmarks) and trigger_time < 1:
                     cv2.putText(frame, "Bird!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                     trigger_time += 1
-                    url = "www.flappybird.leafish.xyz"  # 模擬輸入啟動指令
-                    webbrowser.open(url)
+                    pyautogui.write("xdg-open www.flappybird.leafish.xyz")
+                    pyautogui.press("enter")  # 模擬輸入啟動網址
                     print("Flappy Bird started!")
                     continue
 
