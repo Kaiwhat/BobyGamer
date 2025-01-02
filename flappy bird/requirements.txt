@@ -1,5 +1,0 @@
-Flask
-Flask-SocketIO
-opencv-python
-mediapipe
-numpy
