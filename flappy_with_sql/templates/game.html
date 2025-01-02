@@ -34,7 +34,7 @@
                 //定時從後端抓取資料
                 function updateMaxScore() {
                     fetch('/get_max_score')
-                        .then(response => response.json()) // 将响应解析为 JSON
+                        .then(response => response.json())
                         .then(data => {
                             // 更新前端的 Max Score
                             document.getElementById('maxScore').textContent = data.max_score;
@@ -45,7 +45,7 @@
                 //刷新分數
                 setInterval(updateMaxScore, 100);//原為5000
             
-                // 页面加载完成后立即刷新一次分数
+                //頁面 load 完後，重新加載頁面
                 //window.onload = updateMaxScore;
             </script>
 
@@ -130,7 +130,7 @@
             const leftShoulder = results.poseLandmarks[11];
             const rightShoulder = results.poseLandmarks[12];
 
-            //將y座標轉為向素
+            //將y座標轉為像素
             const leftY = leftShoulder.y * canvasElement.height;
             const rightY = rightShoulder.y * canvasElement.height;
             
