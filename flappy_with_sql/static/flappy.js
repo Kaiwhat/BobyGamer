@@ -187,7 +187,7 @@ async function reload_max_score(max_score){
     const response = await fetch('/reload_max_score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ re_max: max_score }) // 将分数发送给后端
+        body: JSON.stringify({ re_max: max_score }) //將分數發給後端
     });
 }
 
