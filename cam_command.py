@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 import math
 import pyautogui
-import time
+import webbrowser
 
 # 初始化 MediaPipe 手部追蹤器
 mp_hands = mp.solutions.hands
@@ -146,7 +146,7 @@ with mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.5) a
             if is_not_both_hands(results.multi_hand_landmarks):
                 # 比 OK 觸發
                 if is_ok_gesture(thumb_tip, index_tip, [middle_tip, ring_tip, pinky_tip]) and trigger_time < 1:
-                    cv2.putText(frame, "send command!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    cv2.putText(frame, "Enter!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                     trigger_time += 1
                     pyautogui.press("enter")  # 模擬按下 Enter 鍵
                     print("OK 手勢觸發：Enter")
@@ -156,8 +156,8 @@ with mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.5) a
                 if is_fist_gesture(hand_landmarks) and trigger_time < 1:
                     cv2.putText(frame, "Ping pong!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                     trigger_time += 1
-                    pyautogui.write("xdg-open https://www.pingpong.leafish.xyz/")  # 模擬輸入 "sudo"
-                    pyautogui.press("enter")
+                    url = "www.pingpong.leafish.xyz"  # 模擬輸入啟動指令
+                    webbrowser.open(url)
                     print("Ping pong started!")
                     continue
 
@@ -166,8 +166,8 @@ with mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.5) a
                 if is_bird_gesture(results.multi_hand_landmarks) and trigger_time < 1:
                     cv2.putText(frame, "Bird!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                     trigger_time += 1
-                    pyautogui.write("xdg-open https://www.flappybird.leafish.xyz")  # 模擬輸入啟動指令
-                    pyautogui.press("enter")
+                    url = "www.flappybird.leafish.xyz"  # 模擬輸入啟動指令
+                    webbrowser.open(url)
                     print("Flappy Bird started!")
                     continue
 
