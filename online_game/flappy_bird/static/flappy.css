@@ -1,9 +1,14 @@
 .flappy_bird {
-    font-family:'Courier New', Courier, monospace;
+    font-family: 'Courier New', Courier, monospace;
     text-align: center;
-}
-
-#board {
-    /*background-color: aliceblue;*/
+  }
+  
+  #board {
     background-image: url("img/flappybirdbg.png");
-}
+  }
+
+/* 測試用的背景色 */
+  /* #board {
+    background-color: #000;
+    border: 2px solid red;
+} */
